@@ -1,0 +1,18 @@
+{
+  "extends": "fastify-tsconfig",
+  "compilerOptions": {
+    "target": "ESNext",
+    "baseUrl": "src",
+    "outDir": "dist",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false
+  },
+  "exclude": [
+    "__src/modules"
+  ],
+  "include": [
+    "src/**/*.ts"
+  ]
+}

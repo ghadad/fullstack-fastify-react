@@ -1,0 +1,60 @@
+TAP version 14
+# Subtest: this is a child test
+    ok 1 - this passes
+    not ok 2 - test unfinished
+      ---
+      at:
+        fileName: src\modules\smartflow\node\__test__\node.test.ts
+        lineNumber: 4
+        columnNumber: 16
+        typeName: Object
+        generated:
+          fileName: src/modules/smartflow/node/__test__/node.test.ts
+          lineNumber: 4
+          columnNumber: 16
+      stack: >
+        Object.<anonymous> (src/modules/smartflow/node/__test__/node.test.ts:4:16)
+      
+        Module.m._compile (node_modules/@isaacs/ts-node-temp-fork-for-pr-2009/dist/index.js:790:29) (node_modules/@isaacs/ts-node-temp-fork-for-pr-2009/src/index.ts:1368:23)
+      
+        Module.m._compile (node_modules/ts-node/dist/index.js:857:29) (node_modules/ts-node/src/index.ts:1618:23)
+      
+        require.extensions.<computed> (node_modules/ts-node/dist/index.js:859:16) (node_modules/ts-node/src/index.ts:1621:12)
+      
+        require.extensions.<computed> (node_modules/@isaacs/ts-node-temp-fork-for-pr-2009/dist/index.js:792:16) (node_modules/@isaacs/ts-node-temp-fork-for-pr-2009/src/index.ts:1371:12)
+      test: this is a child test
+      source: "import { test } from \"tap\";\r
+      
+        \ import { build } from \"../../../../../test/helper\";\r
+      
+        test(\"example is loaded\", async (t) => {\r
+      
+        ---------------^
+      
+        \  const app = await build(t);\n"
+      ...
+    
+    1..2
+not ok 1 - this is a child test # time=19.107ms
+  ---
+  at:
+    fileName: src\modules\smartflow\node\__test__\node.test.ts
+    lineNumber: 4
+    columnNumber: 16
+    typeName: Object
+    generated:
+      fileName: src/modules/smartflow/node/__test__/node.test.ts
+      lineNumber: 4
+      columnNumber: 16
+  source: "import { test } from \"tap\";\r
+  
+    \ import { build } from \"../../../../../test/helper\";\r
+  
+    test(\"example is loaded\", async (t) => {\r
+  
+    ---------------^
+  
+    \  const app = await build(t);\n"
+  ...
+
+1..1

@@ -1,0 +1,11 @@
+# Ignore build output:
+build/
+dist/
+node_modules/
+
+# Ignore log files:  
+*.log
+
+# Ignore macOS system files:
+.DS_Store
+db.sqlite

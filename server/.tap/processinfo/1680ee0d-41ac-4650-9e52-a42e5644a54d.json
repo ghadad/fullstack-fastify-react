@@ -1,0 +1,30 @@
+{
+  "date": "2023-10-17T21:49:40.883Z",
+  "argv": [
+    "C:\\Program Files\\nodejs\\node.exe",
+    "E:\\fullstack-fastify-react\\server\\src\\modules\\smartflow\\node\\__test__\\node.test.ts"
+  ],
+  "execArgv": [
+    "--loader=file:///E:/fullstack-fastify-react/server/node_modules/@isaacs/ts-node-temp-fork-for-pr-2009/esm.mjs",
+    "--loader=file:///E:/fullstack-fastify-react/server/node_modules/@tapjs/mock/dist/esm/legacy-loader.mjs",
+    "--no-warnings",
+    "--enable-source-maps",
+    "--loader=file:///E:/fullstack-fastify-react/server/node_modules/@tapjs/processinfo/dist/esm/loader-legacy.mjs",
+    "--require=ts-node/register"
+  ],
+  "NODE_OPTIONS": "\"--loader=file:///E:/fullstack-fastify-react/server/node_modules/@tapjs/processinfo/dist/esm/loader-legacy.mjs\" \"--no-warnings\"",
+  "cwd": "E:\\fullstack-fastify-react\\server",
+  "pid": 288,
+  "ppid": 22908,
+  "parent": null,
+  "uuid": "1680ee0d-41ac-4650-9e52-a42e5644a54d",
+  "files": [
+    "E:\\fullstack-fastify-react\\server\\src\\modules\\smartflow\\node\\__test__\\node.test.ts"
+  ],
+  "sources": {},
+  "root": "1680ee0d-41ac-4650-9e52-a42e5644a54d",
+  "externalID": "src\\modules\\smartflow\\node\\__test__\\node.test.ts",
+  "code": 1,
+  "signal": null,
+  "runtime": 443.3195
+}
