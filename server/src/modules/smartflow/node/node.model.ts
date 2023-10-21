@@ -2,12 +2,16 @@ import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 //
 @Entity()
 export class Node {
-  @PrimaryGeneratedColumn({ type: "int", name: "id", unsigned: true })
+  constructor(nodeObject: any) {
+    Object.assign(this, nodeObject);
+  }
+
+  @PrimaryGeneratedColumn()
   id: number;
 
   // foreign key for flow
   @Column({
-    type: "int",
+    type: "bigint",
     name: "flowId",
     unsigned: true,
     foreignKeyConstraintName: "fk_node_flow_id",
@@ -21,7 +25,10 @@ export class Node {
   @Column("text")
   description: string;
 
-  @Column("text")
+  @Column("int", { unsigned: true, default: 0 })
+  position: number;
+
+  @Column({ type: "char", length: 10 })
   actionType: string;
 
   @Column("text")

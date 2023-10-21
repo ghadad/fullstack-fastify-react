@@ -31,7 +31,7 @@ class FlowService {
     return flow;
   }
 
-  async updateFlow(id: number, flow: flowSchemaType) {
+  async update(id: number, flow: flowSchemaType) {
     await this.repository.update({ id: id }, flow);
     return this.getFlowById(id);
   }

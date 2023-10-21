@@ -2,12 +2,13 @@
 import { nodeSchemas, $ref } from "./node.schemas";
 import type * as nodeTypes from "./node.schemas";
 import { FastifyPluginAsync } from "fastify";
+import { nodeService } from "./node.service";
 const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
   for (const schema of [...nodeSchemas]) {
     server.addSchema(schema);
   }
 
-  server.get(
+  server.get<{ Params: nodeTypes.nodeGetByIdType }>(
     "/:id",
     {
       schema: {
@@ -19,21 +20,18 @@ const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
           200: $ref("nodeReplySchema"),
         },
       },
-      config: { auth: false },
     },
     async function (request, reply) {
-      return {
-        id: 1,
-        name: "test",
-        description: "test",
-        actionType: "test",
-        action: "test",
-        createdAt: new Date(),
-      };
+      const node = await nodeService.get(request.params.id);
+      if (node) {
+        return node;
+      } else {
+        reply.notFound();
+      }
     }
   );
 
-  server.post<{ Body: nodeTypes.NodeSchemaType }>(
+  server.post<{ Body: nodeTypes.nodeSchemaType }>(
     "/",
     {
       schema: {
@@ -45,15 +43,13 @@ const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
           200: $ref("nodeReplySchema"),
         },
       },
-      config: { auth: false },
     },
     async function (request, reply) {
-      //  const node = await nodeService.createNode(request.body);
-      return {};
+      return await nodeService.create(request.body);
     }
   );
 
-  server.delete(
+  server.delete<{ Params: nodeTypes.nodeGetByIdType }>(
     "/:id",
     {
       schema: {
@@ -64,12 +60,14 @@ const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
       },
     },
     async function (request, reply) {
-      //  const node = await nodeService.deleteNode(request.params.id);
-      return {};
+      return await nodeService.delete(request.params.id);
     }
   );
 
-  server.put(
+  server.put<{
+    Body: nodeTypes.nodeSchemaType;
+    Params: nodeTypes.nodeGetByIdType;
+  }>(
     "/:id",
     {
       schema: {
@@ -84,8 +82,7 @@ const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
       },
     },
     async function (request, reply) {
-      //  const node = await nodeService.updateNode(request.params.id, request.body);
-      return {};
+      return await nodeService.update(request.params.id, request.body);
     }
   );
 };

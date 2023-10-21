@@ -1,34 +1,41 @@
 // create NodeService class and export initiation of NodeService class
 
-import { NodeSchemaType } from "./node.schemas";
+import { nodeSchemaType } from "./node.schemas";
 import { Node } from "./node.model";
-import { DeleteResult, Repository, UpdateResult } from "typeorm";
+import { Repository } from "typeorm";
 import { Container } from "typedi";
 import { DataSource } from "typeorm";
 
 class NodeService {
-  private nodeRepository: Repository<Node>;
+  private repository: Repository<Node>;
   private db: DataSource;
   constructor() {
     this.db = Container.get<DataSource>("connection");
-    this.nodeRepository =
+    // get repository from connection , this demonstarte how to use typeorm with typedi , without using decorators
+
+    this.repository =
       Container.get<DataSource>("connection").getRepository(Node);
   }
-  async createNode(node: NodeSchemaType): Promise<NodeSchemaType> {
-    const newNode = await this.nodeRepository.create(node);
+
+  async get(id: number) {
+    const node = await this.repository.findOne({ where: { id: id } });
+    return node;
+  }
+
+  async create(node: nodeSchemaType) {
+    const newNode = new Node(node);
+    await this.repository.insert(newNode);
     return newNode;
   }
-  async updateNode(id: string, node: NodeSchemaType): Promise<UpdateResult> {
-    const updatedNode = await this.nodeRepository.update(id, node);
-    return updatedNode;
+
+  async update(id: number, node: nodeSchemaType) {
+    await this.repository.update({ id: id }, node);
+    return await this.get(id);
   }
-  async deleteNode(id: string): Promise<DeleteResult> {
-    const deletedNode = await this.nodeRepository.delete(id);
-    return deletedNode;
-  }
-  async getNode(id: number) {
-    const node = await this.nodeRepository.findOne({ where: { id: id } });
-    return node;
+
+  async delete(id: number) {
+    const result = await this.repository.delete(id);
+    return { success: true, affected: result.affected };
   }
 
   //demonstration of using raw query

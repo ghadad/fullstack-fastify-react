@@ -4,22 +4,25 @@ import { buildJsonSchemas } from "fastify-zod";
 import { z } from "zod";
 const nodeCreateSchema = z.object({
   name: z.string(),
+  flowId: z.number().optional(),
   description: z.string(),
   actionType: z.string(),
   action: z.string(),
   createdAt: z.coerce.date(),
 });
 
-export type NodeSchemaType = z.infer<typeof nodeCreateSchema>;
+export type nodeSchemaType = z.infer<typeof nodeCreateSchema>;
 
 const nodeReplySchema = z.object({
   id: z.number(),
-  name: z.string(),
-  description: z.string(),
-  actionType: z.string(),
-  action: z.string(),
-  createdAt: z.coerce.date(),
+  ...nodeCreateSchema.shape,
 });
+
+const nodesReplySchema = z.array(nodeReplySchema);
+
+export type NodesReplyType = z.infer<typeof nodesReplySchema>;
+
+export type nodeReplySchema = z.infer<typeof nodeReplySchema>;
 
 const nodeGetByIdSchema = z.object({
   id: z.coerce.number(),
@@ -27,8 +30,6 @@ const nodeGetByIdSchema = z.object({
 
 export type nodeGetByIdType = z.infer<typeof nodeGetByIdSchema>;
 
-const nodesReplySchema = z.array(nodeReplySchema);
-export type NodesReplyType = z.infer<typeof nodesReplySchema>;
 export const { schemas: nodeSchemas, $ref } = buildJsonSchemas(
   {
     nodeGetByIdSchema,

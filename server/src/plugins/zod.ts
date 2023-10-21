@@ -1,4 +1,4 @@
-import fp from "fastify-plugin";
+/* import fp from "fastify-plugin";
 import {
   serializerCompiler,
   validatorCompiler,
@@ -16,3 +16,5 @@ export default fp<SupportPluginOptions>(async (fastify, opts) => {
   //decorate the fastify instance with the zod type provider
   fastify.decorate("zodRouter", fastify.withTypeProvider<ZodTypeProvider>());
 });
+
+*/

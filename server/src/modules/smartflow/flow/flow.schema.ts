@@ -20,11 +20,7 @@ export type flowGetByIdType = z.infer<typeof flowGetByIdSchema>;
 
 const flowReplySchema = z.object({
   id: z.number(),
-  name: z.string(),
-  title: z.string(),
-  description: z.string().optional(),
-  tags: z.string().optional(),
-  createdAt: z.coerce.date(),
+  ...flowCreateSchema.shape,
 });
 
 export type flowReplySchema = z.infer<typeof flowReplySchema>;

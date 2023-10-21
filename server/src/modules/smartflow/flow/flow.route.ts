@@ -20,7 +20,6 @@ const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
           200: $ref("flowReplySchema"),
         },
       },
-      config: { auth: false },
     },
     async function (request, reply) {
       const result = await flowService.getFlowById(request.params.id);
@@ -54,7 +53,6 @@ const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
   server.delete<{ Params: flowTypes.flowGetByIdType }>(
     "/:id",
     {
-      config: { auth: false },
       schema: {
         description: "Delete Flow",
         tags: ["flow"],
@@ -82,7 +80,6 @@ const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
   }>(
     "/:id",
     {
-      config: { auth: false },
       schema: {
         description: "Update Flow",
         tags: ["flow"],
@@ -95,10 +92,7 @@ const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
       },
     },
     async function (request, reply) {
-      const flow = await flowService.updateFlow(
-        request.params.id,
-        request.body
-      );
+      const flow = await flowService.update(request.params.id, request.body);
       return flow;
     }
   );
