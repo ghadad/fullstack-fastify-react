@@ -10,7 +10,7 @@ export class Node {
     type: "int",
     name: "flowId",
     unsigned: true,
-    foreignKeyConstraintName: "fk_flowId",
+    foreignKeyConstraintName: "fk_node_flow_id",
     default: 0,
   })
   flowId: number;
