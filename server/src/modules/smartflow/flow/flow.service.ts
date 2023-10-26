@@ -1,7 +1,7 @@
 import { DataSource, Repository } from "typeorm";
 import { Flow } from "./flow.model";
 import createOrGetConnection from "../../../db";
-import { flowSchemaType } from "./flow.schema";
+import { flowQueryCriteriaType, flowSchemaType } from "./flow.schema";
 
 class FlowService {
   constructor() {
@@ -17,8 +17,18 @@ class FlowService {
     this.repository = this.conn.getRepository(Flow);
   }
 
-  async getAll() {
-    return await this.repository.find();
+  async getFlows(criteria: flowQueryCriteriaType) {
+    return await this.repository
+      .createQueryBuilder("flow")
+      .where("title like :term or name like :term or description like :term", {
+        term: `%${criteria.term || ""}%`,
+      })
+      .orderBy(
+        "CASE WHEN flow.updatedAt IS NULL THEN '2021-07-04T03:17:55' ELSE flow.updatedAt   END",
+        "DESC"
+      )
+      .addOrderBy("flow.createdAt", "DESC")
+      .getMany();
   }
 
   async getFlowById(id: number) {
@@ -32,7 +42,8 @@ class FlowService {
   }
 
   async update(id: number, flow: flowSchemaType) {
-    await this.repository.update({ id: id }, flow);
+    flow.updatedAt = new Date();
+    await this.repository.update({ id: id }, flow as any);
     return this.getFlowById(id);
   }
 

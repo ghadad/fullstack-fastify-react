@@ -22,13 +22,18 @@ export class Flow {
   @Column({ length: 300, nullable: true })
   tags: string;
 
-  //create createAt and updateAt columns which is Date type from typeorm
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  @Column({
+    name: "createdAt",
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+  })
   createdAt: Date;
 
   @Column({
+    name: "updfaetdAt",
     type: "timestamp",
     nullable: true,
+    onUpdate: "CURRENT_TIMESTAMP",
   })
   updatedAt: Date;
 }

@@ -9,6 +9,25 @@ const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
   }
 
   server.get<{ Params: nodeTypes.nodeGetByIdType }>(
+    "/flow/:id",
+    {
+      schema: {
+        description: "Get Nodes by Flow Id",
+        tags: ["node", "flow"],
+        summary: "Get Nodes by Flow Id",
+        params: $ref("nodeGetByIdSchema"),
+        response: {
+          200: $ref("nodesReplySchema"),
+        },
+      },
+    },
+    async function (request, reply) {
+      const result = await nodeService.getNodesByFlowId(request.params.id);
+      return result;
+    }
+  );
+
+  server.get<{ Params: nodeTypes.nodeGetByIdType }>(
     "/:id",
     {
       schema: {

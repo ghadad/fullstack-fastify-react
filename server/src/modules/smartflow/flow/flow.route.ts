@@ -1,7 +1,9 @@
 // create the flow route
 import { FastifyPluginAsync } from "fastify";
+// combine the the two next imports into one
 import { flowSchemas, $ref } from "./flow.schema";
 import type * as flowTypes from "./flow.schema";
+
 import flowService from "./flow.service";
 const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
   for (const schema of [...flowSchemas]) {
@@ -94,6 +96,28 @@ const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
     async function (request, reply) {
       const flow = await flowService.update(request.params.id, request.body);
       return flow;
+    }
+  );
+
+  // add get flows route that returns all flows for giver criteria
+  server.get<{ Querystring: flowTypes.flowQueryCriteriaType }>(
+    "/",
+    {
+      schema: {
+        description: "Get Flows",
+        tags: ["flow"],
+        summary: "Get Flows",
+        querystring: $ref("flowQueryCriteriaSchema"),
+        response: {
+          200: $ref("flowsReplySchema"),
+        },
+      },
+    },
+
+    async function (request, reply) {
+      const flows = await flowService.getFlows(request.query);
+      console.log("flows", flows);
+      return flows;
     }
   );
 };

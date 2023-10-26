@@ -22,6 +22,11 @@ class NodeService {
     return node;
   }
 
+  async getNodesByFlowId(id: number) {
+    const nodes = await this.repository.find({ where: { flowId: id } });
+    return nodes;
+  }
+
   async create(node: nodeSchemaType) {
     const newNode = new Node(node);
     await this.repository.insert(newNode);

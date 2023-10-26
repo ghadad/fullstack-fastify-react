@@ -21,11 +21,11 @@ import NotFound from "../pages/NotFound";
 import SmartFlowRoutes from "../pages/smartflow/Routes";
 
 const ErrorElement = () => {
-  let err = useRouteError() as any;
-  console.log("ErrorElement", err);
+  let err = useRouteError() as Error;
   return (
     <div>
-      <div>message:{err}</div>Something went wrong!
+      <div>message:{err.message}</div>Something went wrong!
+      <div>message:{err.stack}</div>Something went wrong!
     </div>
   );
 };
@@ -33,24 +33,19 @@ const ErrorElement = () => {
 // define here all the routes of the app
 const Routeselements = [
   <Route path="/" element={<RootLayout />}>
-    <Route
-      path="/"
-      element={<Dashboard />}
-      loader={tasksLoader}
-      errorElement={<ErrorElement />}
-    />
-    <Route path="login" element={<Login />} />
-    <Route path="register" element={<Register />} />
-    <Route path="environment" element={<Environment />}>
-      <Route path=":id" element={<SubEnvironment />} />
+    <Route errorElement={<ErrorElement />}>
+      <Route path="/dashboard" element={<Dashboard />} loader={tasksLoader} />
+      <Route path="login" element={<Login />} />
+      <Route path="register" element={<Register />} />
+      <Route path="environment" element={<Environment />}>
+        <Route path=":id" element={<SubEnvironment />} />
+      </Route>
+      {SmartFlowRoutes}
+      <Route path="*" element={<NotFound />} />
     </Route>
-    {SmartFlowRoutes}
-    <Route path="*" element={<NotFound />} />
   </Route>,
 ];
 
-const router = createBrowserRouter(
-  createRoutesFromElements([Routeselements, ...SmartFlowRoutes])
-);
+const router = createBrowserRouter(createRoutesFromElements([Routeselements]));
 
 export default router;

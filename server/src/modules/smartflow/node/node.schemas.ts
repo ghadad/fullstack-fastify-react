@@ -8,7 +8,6 @@ const nodeCreateSchema = z.object({
   description: z.string(),
   actionType: z.string(),
   action: z.string(),
-  createdAt: z.coerce.date(),
 });
 
 export type nodeSchemaType = z.infer<typeof nodeCreateSchema>;

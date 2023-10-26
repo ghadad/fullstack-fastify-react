@@ -8,7 +8,18 @@ const flowCreateSchema = z.object({
   description: z.string().optional(),
   tags: z.string().optional(),
   createdAt: z.coerce.date(),
+  updatedAt: z.coerce
+    .date()
+    .transform((val) => val || null)
+    .optional()
+    .nullable(),
 });
+
+const flowQueryCriteriaSchema = z.object({
+  term: z.string().optional(),
+});
+
+export type flowQueryCriteriaType = z.infer<typeof flowQueryCriteriaSchema>;
 
 export type flowSchemaType = z.infer<typeof flowCreateSchema>;
 
@@ -34,6 +45,7 @@ export const { schemas: flowSchemas, $ref } = buildJsonSchemas(
     flowCreateSchema,
     flowsReplySchema,
     flowReplySchema,
+    flowQueryCriteriaSchema,
   },
   { $id: "Flow" }
 );
