@@ -91,14 +91,15 @@ const Flows = () => {
             key={item.id}
           >
             <Text>
-              <Badge colorScheme="messenger" p="5px" m="5px">
-                {item.id}
-              </Badge>
-              {item.name} : {item.title} : {item.description}
-              {item.createdAt} : {item.updatedAt}
+              <NavLink to={"edit/" + item.id}>
+                <Badge colorScheme="messenger" p="5px" m="5px">
+                  {item.id}
+                </Badge>
+                {item.name}
+              </NavLink>
             </Text>
             <ButtonGroup>
-              <NavLink to={"edit/" + item.id} state={{ item }}>
+              <NavLink to={"edit/" + item.id}>
                 <EditIcon />
               </NavLink>
 

@@ -120,6 +120,36 @@ const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
       return flows;
     }
   );
+
+  server.post<{ Body: { flowId: number; nodeId: number } }>(
+    "/add-node",
+    {
+      schema: {
+        description: "Add Node to Flow",
+        tags: ["flow"],
+        summary: "Add Node to Flow",
+        body: {
+          type: "object",
+          properties: {
+            flowId: { type: "number" },
+            nodeId: { type: "number" },
+          },
+        },
+        response: {
+          200: {
+            type: "object",
+            properties: {
+              success: { type: "boolean" },
+            },
+          },
+        },
+      },
+    },
+    async function (request, reply) {
+      await flowService.addNode(request.body.flowId, request.body.nodeId);
+      return { success: true };
+    }
+  );
 };
 
 export default routes;
