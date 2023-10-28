@@ -2,7 +2,7 @@ import { DataSource } from "typeorm";
 import { User } from "./modules/user/user.model";
 import { Node } from "./modules/smartflow/node/node.model";
 import { Flow } from "./modules/smartflow/flow/flow.model";
-
+import { FlowToNode } from "./modules/smartflow/flow/flowToNode.model";
 import { Container } from "typedi";
 
 export const AppDataSource = new DataSource({
@@ -12,7 +12,7 @@ export const AppDataSource = new DataSource({
   password: "postgres",
   database: "yesdb",
   port: 5432,
-  entities: [User, Node, Flow],
+  entities: [User, Node, Flow, FlowToNode],
   synchronize: true, // on production set to false
 });
 

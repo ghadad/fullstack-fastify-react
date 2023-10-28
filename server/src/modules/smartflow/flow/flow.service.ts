@@ -2,6 +2,7 @@ import { DataSource, Repository } from "typeorm";
 import { Flow } from "./flow.model";
 import createOrGetConnection from "../../../db";
 import { flowQueryCriteriaType, flowSchemaType } from "./flow.schema";
+import { FlowToNode } from "./flowToNode.model";
 
 class FlowService {
   constructor() {
@@ -11,10 +12,12 @@ class FlowService {
   }
 
   repository: Repository<Flow>;
+  flowToNodeRepository: Repository<FlowToNode>;
   conn: DataSource;
   async getReposirtoy(): Promise<void> {
     this.conn = await createOrGetConnection();
     this.repository = this.conn.getRepository(Flow);
+    this.flowToNodeRepository = this.conn.getRepository(FlowToNode);
   }
 
   async getFlows(criteria: flowQueryCriteriaType) {
@@ -52,6 +55,20 @@ class FlowService {
     const result = await this.repository.delete({ id: id });
     console.log("delete flow result", result);
     return { success: true, affected: result.affected };
+  }
+
+  async addNode(flowId: number, nodeId: number) {
+    await this.flowToNodeRepository.insert({
+      flow: { id: flowId },
+      node: { id: nodeId },
+    });
+  }
+
+  async removeNode(flowId: number, nodeId: number) {
+    await this.flowToNodeRepository.delete({
+      flow: { id: flowId },
+      node: { id: nodeId },
+    });
   }
 }
 

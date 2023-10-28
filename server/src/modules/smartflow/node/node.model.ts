@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { FlowToNode } from "../flow/flowToNode.model";
 //
 @Entity()
 export class Node {
@@ -8,6 +9,9 @@ export class Node {
 
   @PrimaryGeneratedColumn()
   id: number;
+
+  @OneToMany(() => FlowToNode, (flowToNode) => flowToNode.node)
+  flowToNodes: FlowToNode[];
 
   // foreign key for flow
   @Column({

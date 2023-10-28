@@ -15,15 +15,23 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
-import { useLocation } from "react-router-dom";
+import { useParams, useLoaderData, NavLink } from "react-router-dom";
 import Crons from "../scheduler/Crons";
 import Api from "../../../services/Api";
 import Nodes from "../node/Nodes";
 
-const Form = ({ type }: { type?: string }) => {
-  const location = useLocation();
-  if (type == "new") {
-    location.state = { item: { name: "New Flow", description: "" } };
+export const flowLoader = async (params: { id: string }) => {
+  const response = await Api.get("m/smartflow/flow/" + params.id);
+  return response.data;
+};
+
+const Form = () => {
+  let flow: any = {};
+  const params = useParams<{ id: string }>();
+  if (params.id) {
+    flow = useLoaderData();
+  } else {
+    flow = { name: "", description: "" };
   }
 
   const {
@@ -31,9 +39,10 @@ const Form = ({ type }: { type?: string }) => {
     handleSubmit,
     watch,
     clearErrors,
+
     formState: { errors },
   } = useForm({
-    defaultValues: location.state.item,
+    defaultValues: flow,
   });
 
   const toast = useToast();
@@ -49,7 +58,7 @@ const Form = ({ type }: { type?: string }) => {
         duration: 3000,
         isClosable: true,
       });
-      location.state.item = data;
+      flow = data;
     } catch (error: any) {
       toast({
         title: "Error",
@@ -74,8 +83,17 @@ const Form = ({ type }: { type?: string }) => {
           border={{ base: "none", lg: "2px solid #ccc" }}
           borderRadius={{ base: "none", lg: "5px" }}
         >
-          <Heading as="h2" fontSize="1.5em">
-            Flow {location.state.item.id} : {location.state.item.name}
+          <Heading as="h2" fontSize="1.1em">
+            <NavLink to="/smartflow/flow">
+              <Text
+                color={"facebook.500"}
+                display={"table-cell"}
+                textDecoration={"underline"}
+              >
+                Flows
+              </Text>
+            </NavLink>{" "}
+            | Flow {flow.id} : {flow.name}
           </Heading>
           {errors?.apiError && <span>{JSON.stringify(errors.apiError)}</span>}
           {errors.exampleRequired && <span>This field is required</span>}
@@ -97,7 +115,7 @@ const Form = ({ type }: { type?: string }) => {
           </FormControl>
           <Flex align={"center"}>
             <Button m="5px" colorScheme="facebook" type="submit">
-              Update
+              {params.id ? "Update" : "Create"}
             </Button>
           </Flex>
         </Box>
@@ -115,18 +133,16 @@ const Form = ({ type }: { type?: string }) => {
           <Text>sasasas sasasassasasa ssasaas</Text>
         </Box>
       </GridItem>
-      {/* main content & navbar */}
+
       <GridItem
         colSpan={{ base: 12, lg: 7, xl: 7 }}
         p="10px"
         ml="10px"
-        bg="purple.100"
+        bg="gray.300"
         border={{ base: "none", lg: "2px solid #ccc" }}
         borderRadius={{ base: "none", lg: "5px" }}
       >
-        <Heading as="h2" fontSize="1.5em">
-          <Nodes flowId={location.state.item.id} />
-        </Heading>
+        <Nodes flowId={flow.id} flowName={flow.name} />
       </GridItem>
     </Grid>
   );
