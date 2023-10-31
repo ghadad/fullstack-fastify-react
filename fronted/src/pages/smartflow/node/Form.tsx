@@ -15,15 +15,22 @@ import {
   TabPanels,
   Tab,
   TabPanel,
+  Select,
+  Code,
+  Text,
 } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import { useParams, NavLink } from "react-router-dom";
-
+import actions from "./actions/actions.json";
 import Api from "../../../services/Api";
 import { AxiosPromise } from "axios";
 import { useEffect } from "react";
 import nodeStore from "@/stores/node";
-
+const extraParameters = (text: string, type?: "sql" | "tpl") => {
+  if (type == "sql")
+    return [...new Set<string>(text.match(/{(.*?)}|\:(\w+)/g))].toString();
+  else return [...new Set<string>(text.match(/{(.*?)}/g))].toString();
+};
 export const nodeLoader = async (
   id: string | number
 ): Promise<AxiosPromise> => {
@@ -42,11 +49,15 @@ const Form = (props: {
   const nodeId = props.nodeId || urlParams.nodeId;
   const formType = nodeId ? "edit" : "new";
   let defaultValues = {
+    type: "node",
     name: "",
     description: "",
     flowId: flowId,
     action: "",
-    actionType: "sql",
+    actionType: "",
+    columns: "",
+    inputSchema: "",
+    outputSchema: "",
   };
   if (props.nodeData) {
     defaultValues = props.nodeData;
@@ -56,23 +67,33 @@ const Form = (props: {
         const data = await nodeLoader(nodeId);
         defaultValues = data.data;
       };
-
       if (nodeId) fetchData(nodeId);
+      return () => {};
     }, [nodeId]);
   }
 
   if (formType == "new") {
-    defaultValues.actionType = "sql";
-    defaultValues.action = "select * from table";
+    console.log("new node");
   }
 
   const {
     register,
     handleSubmit,
+    watch,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues,
   });
+
+  useEffect(() => {
+    const subscription = watch((value, { name, type }) => {
+      console.log("WATCH form data :", value);
+      console.log("WATCH NAME:", name);
+      console.log("WATCH TYPE:", type);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   const toast = useToast();
   const setNode = nodeStore((state) => state.setNode);
@@ -89,6 +110,7 @@ const Form = (props: {
         newNode = { ...result.data, isUpdated: true, show: false };
       }
 
+      console.log("newNode", newNode);
       setNode(newNode);
       toast({
         title: "Node updated.",
@@ -108,8 +130,6 @@ const Form = (props: {
     }
   };
 
-  // console.log(watch()); // watch input value by passing the name of it
-  console.error("form errors:", errors);
   return (
     <Box
       as="form"
@@ -134,7 +154,9 @@ const Form = (props: {
         <TabList>
           <Tab>General</Tab>
           <Tab>Action</Tab>
-          <Tab>Heading</Tab>
+          <Tab>Columns</Tab>
+          <Tab>Input Schema</Tab>
+          <Tab>Output Schema</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -145,15 +167,70 @@ const Form = (props: {
                 {...register("name", { required: true })}
                 bg="white"
               />
+              <Text as="pre">
+                Parameters : [{extraParameters(watch("name"))}]
+              </Text>
             </FormControl>
-          </TabPanel>
-          <TabPanel>
             <FormControl id="description">
               <FormLabel>Description</FormLabel>
               <Textarea
                 {...register("description")}
                 minHeight={"200"}
                 bg="white"
+              ></Textarea>
+            </FormControl>
+            <Text as="pre">
+              Parameters : [{extraParameters(watch("description"))}]
+            </Text>
+          </TabPanel>
+          <TabPanel>
+            <FormControl id="action">
+              <FormLabel>Type</FormLabel>
+              <Select {...register("actionType")}>
+                {Object.keys(actions).map((item: any) => (
+                  <option value={item}>{item}</option>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl id="description">
+              <FormLabel>Action</FormLabel>
+              <Textarea
+                {...register("action")}
+                minHeight={"200"}
+                bg="white"
+              ></Textarea>
+              <Text as="pre">
+                Parameters : [{extraParameters(watch("action"), "sql")}]
+              </Text>
+            </FormControl>
+          </TabPanel>
+          <TabPanel>
+            <FormControl id="columns">
+              <FormLabel>Columns</FormLabel>
+              <Textarea
+                minHeight={"200"}
+                bg="white"
+                {...register("columns")}
+              ></Textarea>
+            </FormControl>
+          </TabPanel>
+          <TabPanel>
+            <FormControl id="input-schema">
+              <FormLabel>Input Schema</FormLabel>
+              <Textarea
+                minHeight={"200"}
+                bg="white"
+                {...register("inputSchema")}
+              ></Textarea>
+            </FormControl>
+          </TabPanel>
+          <TabPanel>
+            <FormControl id="output-schema">
+              <FormLabel>Output Schema</FormLabel>
+              <Textarea
+                minHeight={"200"}
+                bg="white"
+                {...register("outputSchema")}
               ></Textarea>
             </FormControl>
           </TabPanel>

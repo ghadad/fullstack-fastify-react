@@ -3,11 +3,15 @@ import { buildJsonSchemas } from "fastify-zod";
 
 import { z } from "zod";
 const nodeCreateSchema = z.object({
+  type: z.string(),
   name: z.string(),
   flowId: z.number().optional(),
   description: z.string(),
   actionType: z.string(),
   action: z.string(),
+  columns: z.string().optional(),
+  inputSchema: z.string().optional(),
+  outputSchema: z.string().optional(),
 });
 
 export type nodeSchemaType = z.infer<typeof nodeCreateSchema>;

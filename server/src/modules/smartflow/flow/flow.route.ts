@@ -4,8 +4,10 @@ import { FastifyPluginAsync } from "fastify";
 import { flowSchemas, $ref } from "./flow.schema";
 import type * as flowTypes from "./flow.schema";
 
-import flowService from "./flow.service";
+import FlowService from "./flow.service";
 const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
+  const flowService = new FlowService();
+
   for (const schema of [...flowSchemas]) {
     server.addSchema(schema);
   }
@@ -118,36 +120,6 @@ const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
       const flows = await flowService.getFlows(request.query);
       console.log("flows", flows);
       return flows;
-    }
-  );
-
-  server.post<{ Body: { flowId: number; nodeId: number } }>(
-    "/add-node",
-    {
-      schema: {
-        description: "Add Node to Flow",
-        tags: ["flow"],
-        summary: "Add Node to Flow",
-        body: {
-          type: "object",
-          properties: {
-            flowId: { type: "number" },
-            nodeId: { type: "number" },
-          },
-        },
-        response: {
-          200: {
-            type: "object",
-            properties: {
-              success: { type: "boolean" },
-            },
-          },
-        },
-      },
-    },
-    async function (request, reply) {
-      await flowService.addNode(request.body.flowId, request.body.nodeId);
-      return { success: true };
     }
   );
 };

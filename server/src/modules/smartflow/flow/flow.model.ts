@@ -1,6 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { flowSchemaType } from "./flow.schema";
-import { FlowToNode } from "./flowToNode.model";
 
 @Entity()
 export class Flow {
@@ -11,14 +10,11 @@ export class Flow {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => FlowToNode, (flowToNode) => flowToNode.flow)
-  flowToNodes: FlowToNode[];
+  @Column({ length: 200 })
+  name: string;
 
   @Column({ length: 50 })
   title: string;
-
-  @Column({ length: 200 })
-  name: string;
 
   @Column({ type: "text", nullable: true })
   description: string;

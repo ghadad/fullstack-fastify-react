@@ -2,6 +2,7 @@ import { join } from "path";
 import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
 import { FastifyPluginAsync, FastifyServerOptions } from "fastify";
 import { productSchemas } from "./modules/product/product.schema";
+import createOrGetConnection from "./db";
 
 import "reflect-metadata";
 
@@ -15,6 +16,7 @@ const app: FastifyPluginAsync<AppOptions> = async (
   fastify,
   opts
 ): Promise<void> => {
+  await createOrGetConnection();
   // Place here your custom code!
 
   // Do not touch the following lines

@@ -35,9 +35,17 @@ interface Props {
 
 const Nodes = ({ flowId }: Props) => {
   const [data, setData] = useState<any>([]);
-  const [newNode, setNewNode] = useState<any>();
+  const [activeNode, setActiveNode] = useState<any>();
   const toast = useToast();
   const modifiedNode = nodeStore((state) => state.modifiedNode);
+
+  const subscribe = () => {
+    nodeStore.subscribe((modifiedNode: any) => {
+      console.log("modifiedNode", modifiedNode);
+      setActiveNode(modifiedNode);
+    });
+  };
+
   const getData = async () => {
     const response = await Api.get(`//m/smartflow/node/flow/${flowId}`);
     setData(response.data);
@@ -45,7 +53,28 @@ const Nodes = ({ flowId }: Props) => {
 
   useEffect(() => {
     getData();
+    subscribe();
   }, []);
+
+  useEffect(() => {
+    if (activeNode) {
+      if (activeNode.isNewItem) {
+        delete activeNode.isNewItem;
+        setData([...data, activeNode]);
+      } else if (activeNode.isDeleted) {
+      } else if (activeNode.isUpdated) {
+        delete activeNode.isUpdated;
+        setData(
+          data.map((x: any) => {
+            if (x.id === activeNode.id) {
+              x = activeNode;
+            }
+            return x;
+          })
+        );
+      }
+    }
+  }, [activeNode]);
 
   const deleteNode = async (nodeId: number) => {
     const response = await Api.delete(`//m/smartflow/node/${nodeId}`);
@@ -65,30 +94,12 @@ const Nodes = ({ flowId }: Props) => {
     }
   };
 
-  useEffect(() => {
-    nodeStore.subscribe((modifiedNode: any) => {
-      if (modifiedNode.isNewItem) {
-        setData([...data, modifiedNode]);
-        setNewNode({ ...modifiedNode });
-        return;
-      } else if (modifiedNode.isDeleted) {
-        console.log("deleted item");
-      } else if (modifiedNode.isUpdated) {
-        setData(
-          data.map((x: any) => {
-            if (x.id === modifiedNode.id) {
-              x = modifiedNode;
-            }
-            return x;
-          })
-        );
-      }
-    });
-  }, [modifiedNode]);
-
-  const addNode = () => {
+  const addNode = (
+    type: "node" | "reducer" | "splitter" | "grouper" | "lambda"
+  ) => {
     const newNode = {
       id: 0,
+      type: type,
       name: "",
       description: "",
       flowId: flowId,
@@ -97,7 +108,7 @@ const Nodes = ({ flowId }: Props) => {
       actionType: "sql",
       show: true,
     };
-    setNewNode(newNode);
+    setActiveNode(newNode);
   };
 
   return (
@@ -109,9 +120,17 @@ const Nodes = ({ flowId }: Props) => {
             ml="10px"
             colorScheme="facebook"
             rightIcon={<SmallAddIcon />}
-            onClick={() => addNode()}
+            onClick={() => addNode("node")}
           >
             Add Node
+          </Button>{" "}
+          <Button
+            ml="10px"
+            colorScheme="twitter"
+            rightIcon={<SmallAddIcon />}
+            onClick={() => addNode("grouper")}
+          >
+            Add Layer
           </Button>{" "}
           After node number{" "}
           <FormControl
@@ -135,8 +154,8 @@ const Nodes = ({ flowId }: Props) => {
             </Text>
           </Flex>
         )}
-        {newNode && newNode.show && (
-          <NodeForm flowId={flowId} nodeData={newNode} />
+        {activeNode && activeNode.show && (
+          <NodeForm flowId={flowId} nodeData={activeNode} />
         )}
         {data.map((item: any) => (
           <>
@@ -148,7 +167,8 @@ const Nodes = ({ flowId }: Props) => {
                 alignItems="center"
                 justifyContent="space-between"
                 p="5px"
-                bg="gray.200"
+                bg={item.type == "node" ? "gray.100" : "facebook.400"}
+                textColor={item.type == "node" ? "black" : "white"}
                 borderRadius="5px"
                 mb="5px"
                 key={item.id}

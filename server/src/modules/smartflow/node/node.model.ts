@@ -1,5 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
-import { FlowToNode } from "../flow/flowToNode.model";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 //
 @Entity()
 export class Node {
@@ -10,8 +9,8 @@ export class Node {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => FlowToNode, (flowToNode) => flowToNode.node)
-  flowToNodes: FlowToNode[];
+  @Column({ length: 10, type: "varchar", default: "node" })
+  type: string;
 
   // foreign key for flow
   @Column({
@@ -23,8 +22,11 @@ export class Node {
   })
   flowId: number;
 
-  @Column({ length: 50 })
+  @Column({ length: 150 })
   name: string;
+
+  @Column({ length: 150, nullable: true })
+  title: string;
 
   @Column("text")
   description: string;
@@ -32,11 +34,20 @@ export class Node {
   @Column("int", { unsigned: true, default: 0 })
   position: number;
 
-  @Column({ type: "char", length: 10 })
+  @Column({ type: "varchar", length: 15, nullable: true })
   actionType: string;
 
-  @Column("text")
+  @Column({ type: "text", nullable: true })
   action: string;
+
+  @Column({ type: "text", nullable: true })
+  columns: string;
+
+  @Column({ type: "text", nullable: true })
+  inputSchema: string;
+
+  @Column({ type: "text", nullable: true })
+  outputSchema: string;
 
   @Column("date", { default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;

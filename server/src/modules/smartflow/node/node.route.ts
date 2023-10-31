@@ -2,8 +2,9 @@
 import { nodeSchemas, $ref } from "./node.schemas";
 import type * as nodeTypes from "./node.schemas";
 import { FastifyPluginAsync } from "fastify";
-import { nodeService } from "./node.service";
+import NodeService from "./node.service";
 const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
+  const nodeService = new NodeService();
   for (const schema of [...nodeSchemas]) {
     server.addSchema(schema);
   }

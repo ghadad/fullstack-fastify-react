@@ -10,11 +10,8 @@ class NodeService {
   private repository: Repository<Node>;
   private db: DataSource;
   constructor() {
-    this.db = Container.get<DataSource>("connection");
-    // get repository from connection , this demonstarte how to use typeorm with typedi , without using decorators
-
-    this.repository =
-      Container.get<DataSource>("connection").getRepository(Node);
+    this.db = Container.get("connection");
+    this.repository = this.db.getRepository(Node);
   }
 
   async get(id: number) {
@@ -50,4 +47,4 @@ class NodeService {
   }
 }
 
-export const nodeService = new NodeService();
+export default NodeService;

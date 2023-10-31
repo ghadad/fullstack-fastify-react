@@ -1,24 +1,9 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  Column,
-  JoinColumn,
-} from "typeorm";
-import { Flow } from "./flow.model";
-import { Node } from "../node/node.model";
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+
 @Entity()
 export class FlowToNode {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @ManyToOne(() => Flow, (flow) => flow.flowToNodes)
-  @JoinColumn({ name: "flowId", referencedColumnName: "id" })
-  flow: Flow;
-
-  @ManyToOne(() => Node, (node) => node.flowToNodes)
-  @JoinColumn({ name: "nodeId", referencedColumnName: "id" })
-  node: Node;
 
   @Column({ nullable: true })
   position: number;

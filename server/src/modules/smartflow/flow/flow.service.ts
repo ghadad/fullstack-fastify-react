@@ -1,23 +1,17 @@
 import { DataSource, Repository } from "typeorm";
 import { Flow } from "./flow.model";
-import createOrGetConnection from "../../../db";
 import { flowQueryCriteriaType, flowSchemaType } from "./flow.schema";
-import { FlowToNode } from "./flowToNode.model";
+import Container from "typedi";
+import NodeService from "../node/node.service";
 
 class FlowService {
-  constructor() {
-    this.getReposirtoy()
-      .then(() => {})
-      .catch(() => {});
-  }
-
   repository: Repository<Flow>;
-  flowToNodeRepository: Repository<FlowToNode>;
   conn: DataSource;
-  async getReposirtoy(): Promise<void> {
-    this.conn = await createOrGetConnection();
+  nodeService: NodeService;
+  constructor() {
+    this.conn = Container.get("connection");
     this.repository = this.conn.getRepository(Flow);
-    this.flowToNodeRepository = this.conn.getRepository(FlowToNode);
+    this.nodeService = new NodeService();
   }
 
   async getFlows(criteria: flowQueryCriteriaType) {
@@ -38,6 +32,10 @@ class FlowService {
     return await this.repository.findOne({ where: { id: id } });
   }
 
+  async getNodes(id: number) {
+    return await this.nodeService.getNodesByFlowId(id);
+  }
+
   async create(flowObject: flowSchemaType) {
     const flow = new Flow(flowObject);
     await this.repository.insert(flow);
@@ -56,20 +54,6 @@ class FlowService {
     console.log("delete flow result", result);
     return { success: true, affected: result.affected };
   }
-
-  async addNode(flowId: number, nodeId: number) {
-    await this.flowToNodeRepository.insert({
-      flow: { id: flowId },
-      node: { id: nodeId },
-    });
-  }
-
-  async removeNode(flowId: number, nodeId: number) {
-    await this.flowToNodeRepository.delete({
-      flow: { id: flowId },
-      node: { id: nodeId },
-    });
-  }
 }
 
-export default new FlowService();
+export default FlowService;

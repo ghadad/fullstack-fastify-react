@@ -5,9 +5,13 @@ import UserService from "./user.service";
 import type * as userTypes from "./user.schemas";
 
 class UserController {
+  userServices: UserService;
+  constructor() {
+    this.userServices = new UserService();
+  }
   async getAllUsers(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const users = await UserService.getAllUsers();
+      const users = await this.userServices.getAllUsers();
       reply.send(users);
     } catch (err) {
       reply.code(500).send(err);
@@ -20,7 +24,7 @@ class UserController {
   ) {
     try {
       const id = Number(request.params.id);
-      const user = await UserService.getUserById(id);
+      const user = await this.userServices.getUserById(id);
       if (!user) {
         reply.code(404).send({ message: "User not found" });
       } else {
@@ -37,7 +41,7 @@ class UserController {
   ) {
     try {
       const user = request.body;
-      const newUser = await UserService.createUser(user);
+      const newUser = await this.userServices.createUser(user);
       reply.code(201).send(newUser);
     } catch (err) {
       reply.code(500).send(err);
@@ -51,7 +55,7 @@ class UserController {
     try {
       const id = Number(request.params.id);
       const user: User = request.body as User;
-      const updatedUser = await UserService.updateUser(id, user);
+      const updatedUser = await this.userServices.updateUser(id, user);
       if (!updatedUser) {
         reply.code(404).send({ message: "User not found" });
       } else {
@@ -68,7 +72,7 @@ class UserController {
   ) {
     try {
       const { id } = request.params;
-      const result = await UserService.deleteUser(id);
+      const result = await this.userServices.deleteUser(id);
       if (!result.deleted) {
         reply.code(404).send({ message: "User not found" });
       } else {

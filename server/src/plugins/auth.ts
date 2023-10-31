@@ -1,7 +1,7 @@
 import fp from "fastify-plugin";
 import FastifyJwt, { FastifyJwtNamespace } from "@fastify/jwt";
 import { FastifyRequest, FastifyReply } from "fastify";
-import userService from "../modules/user/user.service";
+import UserService from "../modules/user/user.service";
 import * as basicAuth from "basic-auth";
 
 import LdapService from "../services/ldap";
@@ -39,6 +39,7 @@ const basicAuthMiddleware = async (
   request: FastifyRequest,
   reply: FastifyReply
 ): Promise<boolean | void> => {
+  const userService = new UserService();
   const authString = request.headers.authorization;
   if (authString && authString.startsWith("Basic")) {
     const credentials = basicAuth.parse(authString);

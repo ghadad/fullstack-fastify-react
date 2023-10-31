@@ -5,5 +5,5 @@
     "noEmit": true,
     
   },
-  "include": ["../src/**/*.ts", "**/*.ts"]
+  "include": ["../src/**/*.ts", "**/*.ts", "../src/modules/smartflow/bin/flow.ts"]
 }

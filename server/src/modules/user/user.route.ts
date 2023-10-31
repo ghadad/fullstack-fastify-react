@@ -1,9 +1,10 @@
 import { FastifyPluginAsync } from "fastify";
 import UserController from "./user.controller";
 import { userSchemas, $ref, loginType, createUserType } from "./user.schemas";
-import userService from "./user.service";
+import UserService from "./user.service";
 import ldapService from "../../services/ldap";
 const routes: FastifyPluginAsync = async (server, opts): Promise<void> => {
+  const userService = new UserService();
   // add schemas to fastify  for swagger documentation
   for (const schema of [...userSchemas]) {
     server.addSchema(schema);

@@ -1,20 +1,14 @@
 import { DataSource, Repository } from "typeorm";
 import { User } from "./user.model";
-import createOrGetConnection from "../../db";
 import { hashSync } from "bcrypt";
 import type { createUserType } from "./user.schemas";
+import Container from "typedi";
 
 class UserService {
-  constructor() {
-    this.getReposirtoy()
-      .then(() => {})
-      .catch(() => {});
-  }
-
   repository: Repository<User>;
   conn: DataSource;
-  async getReposirtoy(): Promise<void> {
-    this.conn = await createOrGetConnection();
+  constructor() {
+    this.conn = Container.get("connection");
     this.repository = this.conn.getRepository(User);
   }
 
@@ -59,4 +53,4 @@ class UserService {
   }
 }
 
-export default new UserService();
+export default UserService;
