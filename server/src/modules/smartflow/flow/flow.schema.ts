@@ -7,7 +7,7 @@ const flowCreateSchema = z.object({
   title: z.string(),
   description: z.string().optional(),
   tags: z.string().optional(),
-  createdAt: z.coerce.date(),
+  createdAt: z.coerce.date().optional(),
   updatedAt: z.coerce
     .date()
     .transform((val) => val || null)

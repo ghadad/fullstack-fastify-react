@@ -8,6 +8,7 @@ const args = minimist(process.argv.slice(2), {
     h: "help",
     v: "version",
     f: "flow",
+    d: "describe",
   },
   boolean: ["help", "version"],
   string: ["flow"],
@@ -36,6 +37,11 @@ async function main() {
   const connection = await createOrGetConnection();
   const flow = new FlowProcessor(args.flow);
   await flow.init();
+  if (args.describe) {
+    flow.describe();
+    return;
+  }
+
   console.time("RUN FLOW");
   const result = await flow.execute();
   console.timeEnd("RUN FLOW");

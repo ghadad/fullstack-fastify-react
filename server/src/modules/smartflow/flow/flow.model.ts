@@ -13,7 +13,7 @@ export class Flow {
   @Column({ length: 200 })
   name: string;
 
-  @Column({ length: 50 })
+  @Column({ length: 400 })
   title: string;
 
   @Column({ type: "text", nullable: true })

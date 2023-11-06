@@ -41,6 +41,9 @@ export class Node {
   action: string;
 
   @Column({ type: "text", nullable: true })
+  postAction: string;
+
+  @Column({ type: "text", nullable: true })
   columns: string;
 
   @Column({ type: "text", nullable: true })

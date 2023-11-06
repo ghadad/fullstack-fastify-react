@@ -9,6 +9,7 @@ const nodeCreateSchema = z.object({
   description: z.string(),
   actionType: z.string(),
   action: z.string(),
+  postAction: z.string().optional(),
   columns: z.string().optional(),
   inputSchema: z.string().optional(),
   outputSchema: z.string().optional(),
